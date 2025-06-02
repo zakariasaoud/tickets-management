@@ -1,9 +1,6 @@
 from fastapi import APIRouter, Query, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.tickets import (
-    TicketCreate,
-    TicketOut,
-)
+from app.schemas.tickets import TicketCreate, TicketOut, TicketsResponseList
 from app.db.sqlite import get_db
 from app.crud import tickets_crud
 from app.crud.exceptions import DuplicateTitleException
@@ -19,7 +16,9 @@ router = APIRouter()
 )
 async def create_new_ticket(
     ticket_in: TicketCreate,
-    reject_duplicates: bool = Query(False, description="Used to avoid creating tickets with same title."),
+    reject_duplicates: bool = Query(
+        False, description="Used to avoid creating tickets with same title."
+    ),
     db: AsyncSession = Depends(get_db),
 ):
     try:
@@ -38,4 +37,26 @@ async def create_new_ticket(
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Cannot create new ticket because of: {str(e)}"
+        )
+
+
+@router.get(
+    "/list_tickets",
+    summary="List all tickets",
+    description="Listing all tickets. To specify how many tickets you would like to get, you can use skip and limit parameters",
+    response_model=TicketsResponseList,
+)
+async def list_tickets(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=0, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        tickets_list_from_db = await tickets_crud.get_all_tickets(
+            db=db, skip=skip, limit=limit
+        )
+        return tickets_list_from_db
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Cannot get the tickets list, because of: {str(e)}"
         )
