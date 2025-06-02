@@ -1,11 +1,12 @@
-import pytest
 import asyncio
 import os
 import sys
 
+import pytest
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from app.models.models import Base
 from app.db.sqlite import create_sqlite_connection, database
+from app.models.models import Base
 
 
 @pytest.fixture

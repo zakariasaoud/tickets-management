@@ -1,20 +1,22 @@
-from fastapi import APIRouter, Path, Query, Depends, HTTPException
+from uuid import UUID
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.crud import tickets_crud
+from app.crud.exceptions import (
+    AlreadyClosedError,
+    DuplicateTitleException,
+    InvalidCloseTransitionError,
+    NotFoundError,
+)
+from app.db.sqlite import get_db
 from app.schemas.tickets import (
     TicketCreate,
     TicketOut,
-    TicketUpdate,
     TicketsResponseList,
+    TicketUpdate,
 )
-from app.db.sqlite import get_db
-from app.crud import tickets_crud
-from app.crud.exceptions import (
-    DuplicateTitleException,
-    NotFoundError,
-    InvalidCloseTransitionError,
-    AlreadyClosedError,
-)
-from uuid import UUID
 
 router = APIRouter()
 
@@ -22,9 +24,10 @@ router = APIRouter()
 @router.post(
     "/add_ticket",
     summary="Create a new ticket",
-    description="Creating new ticket, by giving the ticket title. The ticket description and the status are optionals",
+    description="Creating new ticket, by giving the ticket title. "
+    "The ticket description and the status are optionals",
     response_model=TicketOut,
-    status_code=201
+    status_code=201,
 )
 async def create_new_ticket(
     ticket_in: TicketCreate,
@@ -55,7 +58,8 @@ async def create_new_ticket(
 @router.get(
     "/list_tickets",
     summary="List all tickets",
-    description="Listing all tickets. To specify how many tickets you would like to get, you can use skip and limit parameters",
+    description="Listing all tickets. To specify how many tickets you would like "
+    "to get, you can use skip and limit parameters",
     response_model=TicketsResponseList,
 )
 async def list_tickets(
@@ -116,7 +120,8 @@ async def update_ticket(
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Cannot update the ticket with id {ticket_id}, because of: {str(e)}",
+            detail=f"Cannot update the ticket with id {ticket_id}, "
+            f"because of: {str(e)}",
         )
 
 
@@ -147,7 +152,8 @@ async def close_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(g
 @router.delete(
     "/delete_ticket/{ticket_id}",
     summary="Delete a ticket",
-    description="Delete a ticket that is already closed. If force_delete=true, delete the ticket regardless of his status.",
+    description="Delete a ticket that is already closed. If force_delete=true, "
+    "delete the ticket regardless of his status.",
     status_code=204,
 )
 async def delete_ticket(
@@ -166,14 +172,16 @@ async def delete_ticket(
     except Exception as e:
         raise HTTPException(
             status_code=500,
-            detail=f"Cannot delete the ticket with id {ticket_id}, because of: {str(e)}",
+            detail=f"Cannot delete the ticket with id {ticket_id}, "
+            f"because of: {str(e)}",
         )
 
 
 @router.delete(
     "/delete_all_tickets",
     summary="Delete all tickets",
-    description="Delete all closed tickets. If force_delete=true, delete all tickets regardless of status.",
+    description="Delete all closed tickets. "
+    "If force_delete=true, delete all tickets regardless of status.",
 )
 async def delete_all_tickets(
     db: AsyncSession = Depends(get_db),
@@ -183,10 +191,12 @@ async def delete_all_tickets(
         result = await tickets_crud.delete_tickets(db=db, force_delete=force_delete)
         if result["delete_count"] == 0:
             return {
-                "message": f"No tickets were deleted. {result['total_count']} remaining tickets."
+                "message": f"No tickets were deleted. "
+                f"{result['total_count']} remaining tickets."
             }
         return {
-            "message": f"{result['delete_count']} tickets deleted. {result['total_count']} remaining tickets."
+            "message": f"{result['delete_count']} tickets deleted. "
+            f"{result['total_count']} remaining tickets."
         }
     except Exception as e:
         raise HTTPException(

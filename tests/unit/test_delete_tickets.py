@@ -1,7 +1,9 @@
+from unittest.mock import ANY, AsyncMock, patch
+
 import pytest
-from httpx import AsyncClient, ASGITransport
-from unittest.mock import AsyncMock, patch, ANY
-from app.crud.exceptions import NotFoundError, InvalidCloseTransitionError
+from httpx import ASGITransport, AsyncClient
+
+from app.crud.exceptions import InvalidCloseTransitionError, NotFoundError
 from app.main import app
 
 

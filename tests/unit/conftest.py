@@ -1,14 +1,15 @@
-import pytest
-from unittest.mock import AsyncMock
-from uuid import UUID
-from datetime import datetime
 import os
 import sys
+from datetime import datetime
+from unittest.mock import AsyncMock
+from uuid import UUID
+
+import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from app.main import app
-from app.schemas.tickets import TicketsResponseList, TicketOut
 from app.db.sqlite import get_db
+from app.main import app
+from app.schemas.tickets import TicketOut, TicketsResponseList
 
 
 @pytest.fixture

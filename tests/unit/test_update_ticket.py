@@ -1,10 +1,12 @@
-import pytest
-from httpx import AsyncClient, ASGITransport
 from unittest.mock import AsyncMock, patch
+
+import pytest
+from httpx import ASGITransport, AsyncClient
+
 from app.crud.exceptions import (
+    AlreadyClosedError,
     InvalidCloseTransitionError,
     NotFoundError,
-    AlreadyClosedError,
 )
 from app.main import app
 

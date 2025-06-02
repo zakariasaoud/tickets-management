@@ -1,8 +1,10 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Text, DateTime, Enum
+
+from sqlalchemy import Column, DateTime, Enum, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.declarative import declarative_base
+
 from app.schemas.tickets import TicketStatus
 
 Base = declarative_base()

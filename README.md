@@ -1,5 +1,7 @@
 # Tickets management with FastAPI
 
+![Coverage](https://img.shields.io/badge/Coverage-90%25-yellow)
+![Ruff](https://img.shields.io/badge/Ruff-passed-brightgreen)
 
 ##  Description
 
@@ -123,7 +125,7 @@ In this section, we document the main routes available in the application,
 including their methods, paths, and example usages.
 
 
-### ➕ `POST /tickets/add_ticket`
+###s ➕ `POST /tickets/add_ticket`
 
 Create a new ticket by providing a title. Description and status are optional.
 
@@ -287,12 +289,30 @@ pytest .\tests --disable-warnings
 
 ### 📊 Running Tests with Coverage
 
-![Coverage](https://img.shields.io/badge/Coverage-90%25-yellow)
-
 The current test coverage is 90%. To run all tests with coverage reporting, you can use the following commands:
 
 ```bash
 coverage run --branch -m pytest tests/
 coverage report -m
 coverage html
+```
+
+## 🧹 Code Style
+
+This project uses [Ruff](https://docs.astral.sh/ruff/) for Python linting (PEP8 compliance, import sorting, etc.).
+
+### Running Ruff
+
+To check code quality (lint):
+
+```bash
+ruff check .
+```
+
+### Format code 
+
+To reformat the Python files according to Ruff’s rules:
+
+```bash
+ruff format .
 ```

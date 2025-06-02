@@ -1,21 +1,23 @@
+from typing import Optional
+from uuid import UUID
+
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, delete
+
+from app.crud.exceptions import (
+    AlreadyClosedError,
+    DuplicateTitleException,
+    InvalidCloseTransitionError,
+    InvalidUUIDError,
+    NotFoundError,
+)
 from app.models.models import Ticket
 from app.schemas.tickets import (
     TicketOut,
-    TicketUpdate,
-    TicketStatus,
     TicketsResponseList,
+    TicketStatus,
+    TicketUpdate,
 )
-from typing import Optional
-from app.crud.exceptions import (
-    DuplicateTitleException,
-    InvalidUUIDError,
-    NotFoundError,
-    InvalidCloseTransitionError,
-    AlreadyClosedError,
-)
-from uuid import UUID
 
 
 async def create_ticket(
@@ -33,7 +35,7 @@ async def create_ticket(
         title (str): The title of the ticket.
         description (str): The description of the ticket (Optional).
         status (TicketStatus): The status of the ticket (Optional).
-        reject_duplicates (bool) : This parameter is used to avoid creating duplicate tickets (with the same title).
+        reject_duplicates (bool) : To avoid creating duplicate tickets (same title).
 
     Returns:
         TicketOut: The created ticket as a Pydantic model.
@@ -65,7 +67,8 @@ async def get_all_tickets(
         limit (int): Maximum number of tickets to return. Default is 10.
 
     Returns:
-        TicketsResponseList: A Pydantic object containing the total count, pagination info, and tickets list.
+        TicketsResponseList: A Pydantic object containing the total count,
+        pagination info, and tickets list.
     """
     # Get the total number of tickets
     total = await db.scalar(select(func.count()).select_from(Ticket))
@@ -192,7 +195,7 @@ async def delete_ticket_by_id(
     Args:
         db (AsyncSession): The async SQLAlchemy database session.
         ticket_id (str): The ticket ID.
-        force_delete (bool): To can ticket any tickets, even if his status in ["open","stalled"]
+        force_delete (bool): If True, delete all tickets regardless of status.
 
     Returns:
         None

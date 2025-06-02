@@ -31,6 +31,7 @@ class AlreadyClosedError(Exception):
 
 
 class InvalidCloseTransitionError(Exception):
-    """Raised when we want to close a stalled ticket (To close a stalled ticket you should re-open it)"""
+    """Raised when we want to close a stalled ticket
+    (To close a stalled ticket you should re-open it)"""
 
     pass
