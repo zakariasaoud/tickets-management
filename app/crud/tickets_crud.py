@@ -3,7 +3,8 @@ from sqlalchemy import select, func
 from app.models.models import Ticket
 from app.schemas.tickets import TicketOut, TicketStatus, TicketsResponseList
 from typing import Optional
-from app.crud.exceptions import DuplicateTitleException
+from app.crud.exceptions import DuplicateTitleException, InvalidUUIDError, NotFoundError
+from uuid import UUID
 
 
 async def create_ticket(
@@ -69,3 +70,36 @@ async def get_all_tickets(
         limit=limit,
         results=[TicketOut.from_orm(ticket) for ticket in tickets],
     )
+
+
+def validate_uuid(ticket_id):
+    """
+    :param ticket_id: the ticket ID that we want to validate.
+    :return: ticket_uuid
+    """
+    try:
+        ticket_uuid = UUID(ticket_id)
+        return ticket_uuid
+    except ValueError:
+        raise InvalidUUIDError(f"Invalid UUID format of ticket_id: {ticket_id}")
+
+
+async def get_ticket_by_id(db: AsyncSession, ticket_id: str) -> TicketOut:
+    """
+    Get a ticket by its ID if it exists.
+
+    Args:
+        db (AsyncSession): The async SQLAlchemy database session.
+        ticket_id (str): The ticket ID.
+
+    Returns:
+        TicketOut: The ticket as a Pydantic model.
+    """
+    ticket_uuid = validate_uuid(ticket_id)
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_uuid))
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise NotFoundError("Ticket", ticket_id)
+
+    return TicketOut.from_orm(ticket)

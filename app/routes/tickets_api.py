@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Query, Depends, HTTPException
+from fastapi import APIRouter, Path, Query, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.schemas.tickets import TicketCreate, TicketOut, TicketsResponseList
 from app.db.sqlite import get_db
 from app.crud import tickets_crud
-from app.crud.exceptions import DuplicateTitleException
+from app.crud.exceptions import DuplicateTitleException, NotFoundError
+from uuid import UUID
 
 router = APIRouter()
 
@@ -59,4 +60,23 @@ async def list_tickets(
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Cannot get the tickets list, because of: {str(e)}"
+        )
+
+
+@router.get(
+    "/get_ticket/{ticket_id}",
+    summary="Get a ticket from its ID",
+    description="Get a ticket by its ID if it exists..",
+    response_model=TicketOut,
+)
+async def get_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(get_db)):
+    try:
+        ticket = await tickets_crud.get_ticket_by_id(db=db, ticket_id=str(ticket_id))
+        return ticket
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cannot get the ticket with id {ticket_id}, because of: {str(e)}",
         )
