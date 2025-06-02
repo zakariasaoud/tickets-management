@@ -16,7 +16,7 @@ async def test_create_ticket_success(ticket_input, fake_created_ticket):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post("/tickets/add_ticket", json=ticket_input)
-            assert response.status_code == 200
+            assert response.status_code == 201
             data = response.json()
             assert data["title"] == ticket_input["title"]
             assert data["description"] == ticket_input["description"]

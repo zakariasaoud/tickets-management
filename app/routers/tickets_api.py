@@ -24,6 +24,7 @@ router = APIRouter()
     summary="Create a new ticket",
     description="Creating new ticket, by giving the ticket title. The ticket description and the status are optionals",
     response_model=TicketOut,
+    status_code=201
 )
 async def create_new_ticket(
     ticket_in: TicketCreate,

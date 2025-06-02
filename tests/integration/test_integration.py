@@ -17,7 +17,7 @@ async def test_add_ticket():
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.post("/tickets/add_ticket", json=ticket_data)
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     data = response.json()
     assert data["title"] == ticket_data["title"]
     assert data["description"] == ticket_data["description"]

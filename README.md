@@ -55,9 +55,16 @@ We can find the following files :
 - main.py : The main entry point of the FastAPI application.
 - .env : Stores environment variables, including the path to the SQLite database.
 
-### API routes
-
-![img.png](img.png)
+### API Routes Overview
+| Method | Path                               | Description           |
+|--------|------------------------------------|-----------------------|
+| POST   | /tickets/add_ticket                | Create a new ticket   |
+| GET    | /tickets/list_tickets              | List all tickets      |
+| GET    | /tickets/get_ticket/{ticket_id}    | Retrieve ticket by ID |
+| PUT    | /tickets/update_ticket/{ticket_id} | Update a ticket by ID |
+| PATCH  | /tickets/{ticket_id}/close         | Close a ticket        |
+| DELETE | /tickets/delete_ticket/{ticket_id} | Delete a ticket       |
+| DELETE | /tickets/delete_all_tickets        | Delete all tickets    |
 
 ##  Getting Started
 
@@ -111,26 +118,153 @@ Afterward, the project will be live at [http://localhost:8000](http://localhost:
 
 FastAPI automatically generates documentation based on the specifications of the endpoints you’ve defined. 
 You can access the interactive API documentation at http://localhost:8000/docs.
-You can also use Postman to test the different routes. For example:
+You can also use Postman to test the different routes. 
+In this section, we document the main routes available in the application, 
+including their methods, paths, and example usages.
 
-- To list all events, we use the following url :
 
-```http://localhost:8000/events/list_events/  ```
+### ➕ `POST /tickets/add_ticket`
 
-- To create new event, we use the following url :
+Create a new ticket by providing a title. Description and status are optional.
 
-```http://localhost:8000/events/add_event/```
+- **Summary:** Create a new ticket  
+- **Status Code:** `201 Created`  
+- **Query Parameter:**  
+  - `reject_duplicates` (bool, optional): Prevents creating tickets with the same title. Default: `false`.
 
-Then we send the following event attribute on the request body :
-```
+#### 🔗 Example Request URL
+
+`POST http://localhost:8000/tickets/add_ticket?reject_duplicates=false`
+
+#### 🔗 Request Body (JSON)
+
+```json
 {
-  "start": <your-start-datetime>,
-  "tags": [<your-tag-value>, <your-tag2-value> ....]
+  "title": "Server down",
+  "description": "The API server is not responding",
+  "status": "open"
 }
 ```
-- To replace the tags of an event, we can use the following url :
 
-```http://localhost:8000/events/update_event_tags/<your-event-id>/?tags=<your-tag-value>&replace=True```
+### ➕ `GET /tickets/list_tickets`
+
+List all tickets with optional pagination.
+
+- **Summary:** List all tickets  
+- **Description:** Retrieve tickets with optional `skip` and `limit` query parameters to control pagination.  
+- **Status Code:** `200 OK`  
+- **Query Parameters:**  
+  - `skip` (int, optional, default: 0): Number of tickets to skip. Must be ≥ 0.  
+  - `limit` (int, optional, default: 10): Maximum number of tickets to return. Must be between 0 and 100.
+
+#### 🔗 Example Request URL
+
+`GET http://localhost:8000/tickets/list_tickets`
+
+#### 🔗 Response (200 OK)
+
+```json
+{
+  "tickets": [
+    {
+      "id": 1,
+      "title": "Server down",
+      "description": "The API server is not responding",
+      "status": "open",
+      "created_at": "2025-06-02T14:32:10.123Z"
+    },
+    {
+      "id": 2,
+      "title": "Login issue",
+      "description": "Cannot login with valid credentials",
+      "status": "closed",
+      "created_at": "2025-06-03T09:15:45.456Z"
+    }
+  ],
+  "total": 2,
+  "skip": 0,
+  "limit": 10
+}
+```
+
+### ➕ `GET /tickets/get_ticket/{ticket_id}`
+
+Retrieve a ticket by its unique ID.
+
+- **Summary:** Get a ticket from its ID  
+- **Description:** Fetch the details of a specific ticket using its UUID.  
+- **Status Code:** `200 OK`  
+- **Path Parameter:**  
+  - `ticket_id` (UUID): The unique identifier of the ticket.
+
+#### 🔗 Example Request URL
+
+`GET http://localhost:8000/tickets/get_ticket/12345678-1234-5678-1234-567812345679`
+
+
+### ➕ `PUT /tickets/update_ticket/{ticket_id}`
+
+Update an existing ticket by its unique ID.
+
+- **Summary:** Update a ticket from its ID  
+- **Description:** Modify ticket details for a given ticket ID.  
+- **Status Code:** `200 OK`  
+- **Path Parameter:**  
+  - `ticket_id` (UUID): The unique identifier of the ticket to update.
+
+#### 🔗 Example Request URL
+`PUT http://localhost:8000/tickets/update_ticket/12345678-1234-5678-1234-567812345679`
+
+#### 🔗 Request Body (JSON)
+
+```json
+{
+  "description": "The API server is responding now",
+  "status": "closed"
+}
+```
+
+### ➕ `PATCH /tickets/{ticket_id}/close`
+
+Close an existing ticket by its unique ID.
+
+- **Summary:** Close a ticket  
+- **Description:** Mark the ticket as closed by its ID.  
+- **Status Code:** `200 OK`  
+- **Path Parameter:**  
+  - `ticket_id` (UUID): The unique identifier of the ticket to close.
+
+#### 🔗 Example Request URL
+`GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
+
+### ➕ `DELETE /delete_ticket/{ticket_id}`
+
+Delete a ticket by its unique ID.
+
+- **Summary:** Delete a ticket  
+- **Description:** Delete a ticket that is already closed. Use the `force_delete` query parameter to delete regardless of status.  
+- **Status Code:** `204 No Content` (on successful deletion)  
+- **Path Parameter:**  
+  - `ticket_id` (UUID): The unique identifier of the ticket to delete.  
+- **Query Parameter:**  
+  - `force_delete` (bool, optional, default: false): Force deletion even if the ticket is not closed.
+
+#### 🔗 Example Request URL
+`DELETE http://localhost:8000/tickets/delete_ticket/12345678-1234-5678-1234-567812345679?force_delete=True`
+
+### ➕ `DELETE /delete_all_tickets`
+
+Delete all tickets, with option to force delete regardless of status.
+
+- **Summary:** Delete all tickets  
+- **Description:** Delete all closed tickets. Use the `force_delete` query parameter to delete all tickets regardless of their status.  
+- **Status Code:** `200 OK`  
+- **Query Parameter:**  
+  - `force_delete` (bool, optional, default: false): Force deletion of all tickets regardless of status.
+
+#### 🔗 Example Request URL
+`DELETE http://localhost:8000/tickets/delete_all_tickets?force_delete=True`
+
 
 ## Testing
 ### 🔧 Unit Tests:
