@@ -1,7 +1,12 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from app.models.models import Ticket
-from app.schemas.tickets import TicketOut, TicketStatus, TicketsResponseList
+from app.schemas.tickets import (
+    TicketOut,
+    TicketUpdate,
+    TicketStatus,
+    TicketsResponseList,
+)
 from typing import Optional
 from app.crud.exceptions import DuplicateTitleException, InvalidUUIDError, NotFoundError
 from uuid import UUID
@@ -102,4 +107,38 @@ async def get_ticket_by_id(db: AsyncSession, ticket_id: str) -> TicketOut:
     if not ticket:
         raise NotFoundError("Ticket", ticket_id)
 
+    return TicketOut.from_orm(ticket)
+
+
+async def update_ticket_by_id(
+    db: AsyncSession, ticket_id: str, update_data: TicketUpdate
+) -> TicketOut:
+    """
+    Update an existing ticket in the database, if it exists.
+
+    Args:
+        db (AsyncSession): The async SQLAlchemy database session.
+        ticket_id (str): The ticket ID.
+        update_data (TicketUpdate): The new data of the ticket.
+
+    Returns:
+        TicketOut: The updated ticket as a Pydantic model.
+    """
+    ticket_uuid = validate_uuid(ticket_id)
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_uuid))
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise NotFoundError("Ticket", ticket_id)
+
+    # Update only the provided fields
+    if update_data.title is not None:
+        ticket.title = update_data.title
+    if update_data.description is not None:
+        ticket.description = update_data.description
+    if update_data.status is not None:
+        ticket.status = update_data.status
+
+    await db.commit()
+    await db.refresh(ticket)
     return TicketOut.from_orm(ticket)

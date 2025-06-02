@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Path, Query, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.schemas.tickets import TicketCreate, TicketOut, TicketsResponseList
+from app.schemas.tickets import (
+    TicketCreate,
+    TicketOut,
+    TicketUpdate,
+    TicketsResponseList,
+)
 from app.db.sqlite import get_db
 from app.crud import tickets_crud
 from app.crud.exceptions import DuplicateTitleException, NotFoundError
@@ -79,4 +84,31 @@ async def get_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(get
         raise HTTPException(
             status_code=500,
             detail=f"Cannot get the ticket with id {ticket_id}, because of: {str(e)}",
+        )
+
+
+@router.put(
+    "/update_ticket/{ticket_id}",
+    summary="Update a ticket from its ID",
+    description="Get an existing ticket by its ID.",
+    response_model=TicketOut,
+)
+async def update_ticket(
+    update_data: TicketUpdate,
+    ticket_id: UUID = Path(...),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        updated_ticket = await tickets_crud.update_ticket_by_id(
+            db=db,
+            update_data=update_data,
+            ticket_id=str(ticket_id),
+        )
+        return updated_ticket
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cannot update the ticket with id {ticket_id}, because of: {str(e)}",
         )
