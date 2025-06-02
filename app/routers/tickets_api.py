@@ -179,15 +179,13 @@ async def delete_all_tickets(
     force_delete: bool = Query(False, description="Forcefully remove all tickets"),
 ):
     try:
-        deleted_count, total_tickets = await tickets_crud.delete_all_tickets(
-            db=db, force_delete=force_delete
-        )
-        if deleted_count == 0:
+        result = await tickets_crud.delete_tickets(db=db, force_delete=force_delete)
+        if result["delete_count"] == 0:
             return {
-                "message": f"No tickets were deleted. {total_tickets} remaining tickets."
+                "message": f"No tickets were deleted. {result['total_count']} remaining tickets."
             }
         return {
-            "message": f"{deleted_count} tickets deleted. {total_tickets} remaining tickets."
+            "message": f"{result['delete_count']} tickets deleted. {result['total_count']} remaining tickets."
         }
     except Exception as e:
         raise HTTPException(

@@ -212,7 +212,7 @@ async def delete_ticket_by_id(
     await db.commit()
 
 
-async def delete_all_tickets(db: AsyncSession, force_delete: bool = False) -> int:
+async def delete_tickets(db: AsyncSession, force_delete: bool = False):
     """
     Delete all tickets that are closed, or all tickets if force_delete is True.
 
@@ -221,7 +221,7 @@ async def delete_all_tickets(db: AsyncSession, force_delete: bool = False) -> in
         force_delete (bool): If True, delete all tickets regardless of status.
 
     Returns:
-        int: Number of deleted tickets.
+        dict: total number of deleted tickets and total number of tickets.
     """
     query = delete(Ticket)
     if not force_delete:
@@ -230,4 +230,4 @@ async def delete_all_tickets(db: AsyncSession, force_delete: bool = False) -> in
     result = await db.execute(query)
     await db.commit()
     total_tickets = await db.scalar(select(func.count()).select_from(Ticket))
-    return result.rowcount, total_tickets
+    return {"delete_count": result.rowcount, "total_count": total_tickets}
