@@ -76,9 +76,8 @@ git clone https://github.com/zakariasaoud/tickets-management.git
 ```
 After cloning the project, there are two possible ways to start the application:
 
-#### 1 - Starting the uvicorn server in your local machine:
-In this method, you need to create and activate a Python virtual environment, 
-install the dependencies from requirements.txt, and then run the Uvicorn server.
+#### Method 1 – Starting the Uvicorn server locally:
+In this method, you'll create and activate a Python virtual environment, install the dependencies from requirements.txt, and then run the Uvicorn server.
 
 ```shell script
 # Navigate to the project root directory
@@ -98,13 +97,13 @@ pip install -r requirements.txt
 # Run the Uvicorn server with autoreload
 uvicorn app.main:app --reload
 ```
+Afterward, the project will be live at [http://localhost:8000](http://localhost:8000).
 
-#### 2 - Using the docker compose file:
-This method requires Docker installed on your machine. It will build and run containers for the FastAPI app and the database. 
-Using Docker allows data to persist inside the database container.
+#### Method 2 – Using Docker Compose:
+This method requires Docker to be installed on your machine. It will build and run containers for the FastAPI app and the database, with data persistence inside the database container.
 
 ```shell script
-# cd into project root
+# Navigate to the project root directory
 cd tickets-management
 
 # Run Docker Compose to start the application and its dependencies
