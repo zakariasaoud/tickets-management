@@ -8,7 +8,13 @@ from app.schemas.tickets import (
     TicketsResponseList,
 )
 from typing import Optional
-from app.crud.exceptions import DuplicateTitleException, InvalidUUIDError, NotFoundError
+from app.crud.exceptions import (
+    DuplicateTitleException,
+    InvalidUUIDError,
+    NotFoundError,
+    InvalidCloseTransitionError,
+    AlreadyClosedError,
+)
 from uuid import UUID
 
 
@@ -139,6 +145,39 @@ async def update_ticket_by_id(
     if update_data.status is not None:
         ticket.status = update_data.status
 
+    await db.commit()
+    await db.refresh(ticket)
+    return TicketOut.from_orm(ticket)
+
+
+async def close_ticket_by_id(
+    db: AsyncSession,
+    ticket_id: str,
+) -> TicketOut:
+    """
+    Close an existing ticket in the database, if it exists.
+
+    Args:
+        db (AsyncSession): The async SQLAlchemy database session.
+        ticket_id (str): The ticket ID.
+
+    Returns:
+        TicketOut: The closed ticket as a Pydantic model.
+    """
+    ticket_uuid = validate_uuid(ticket_id)
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_uuid))
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise NotFoundError("Ticket", ticket_id)
+
+    if ticket.status == TicketStatus.closed:
+        raise AlreadyClosedError("Ticket is already closed.")
+
+    if ticket.status == TicketStatus.stalled:
+        raise InvalidCloseTransitionError("Cannot close a stalled ticket.")
+
+    ticket.status = TicketStatus.closed
     await db.commit()
     await db.refresh(ticket)
     return TicketOut.from_orm(ticket)

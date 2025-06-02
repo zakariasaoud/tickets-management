@@ -8,7 +8,12 @@ from app.schemas.tickets import (
 )
 from app.db.sqlite import get_db
 from app.crud import tickets_crud
-from app.crud.exceptions import DuplicateTitleException, NotFoundError
+from app.crud.exceptions import (
+    DuplicateTitleException,
+    NotFoundError,
+    InvalidCloseTransitionError,
+    AlreadyClosedError,
+)
 from uuid import UUID
 
 router = APIRouter()
@@ -111,4 +116,28 @@ async def update_ticket(
         raise HTTPException(
             status_code=500,
             detail=f"Cannot update the ticket with id {ticket_id}, because of: {str(e)}",
+        )
+
+
+@router.patch(
+    "/{ticket_id}/close",
+    summary="Close a ticket",
+    description="Close an existing ticket.",
+    response_model=TicketOut,
+)
+async def close_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(get_db)):
+    try:
+        updated_ticket = await tickets_crud.close_ticket_by_id(
+            db=db,
+            ticket_id=str(ticket_id),
+        )
+        return updated_ticket
+    except (InvalidCloseTransitionError, AlreadyClosedError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cannot close the ticket with id {ticket_id}, because of: {str(e)}",
         )

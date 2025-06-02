@@ -22,3 +22,15 @@ class InvalidUUIDError(ValueError):
     """Raised when the provided UUID string used to get a ticket, is invalid."""
 
     pass
+
+
+class AlreadyClosedError(Exception):
+    """Raised when we try to close a closed ticket."""
+
+    pass
+
+
+class InvalidCloseTransitionError(Exception):
+    """Raised when we want to close a stalled ticket (To close a stalled ticket you should re-open it)"""
+
+    pass
