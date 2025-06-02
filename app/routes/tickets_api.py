@@ -141,3 +141,55 @@ async def close_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(g
             status_code=500,
             detail=f"Cannot close the ticket with id {ticket_id}, because of: {str(e)}",
         )
+
+
+@router.delete(
+    "/delete_ticket/{ticket_id}",
+    summary="Delete a ticket",
+    description="Delete a ticket that is already closed. If force_delete=true, delete the ticket regardless of his status.",
+    status_code=204,
+)
+async def delete_ticket(
+    ticket_id: UUID = Path(...),
+    db: AsyncSession = Depends(get_db),
+    force_delete: bool = Query(False, description="Forcefully remove this ticket"),
+):
+    try:
+        await tickets_crud.delete_ticket_by_id(
+            db=db, ticket_id=str(ticket_id), force_delete=force_delete
+        )
+    except NotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except InvalidCloseTransitionError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Cannot delete the ticket with id {ticket_id}, because of: {str(e)}",
+        )
+
+
+@router.delete(
+    "/delete_all_tickets",
+    summary="Delete all tickets",
+    description="Delete all closed tickets. If force_delete=true, delete all tickets regardless of status.",
+)
+async def delete_all_tickets(
+    db: AsyncSession = Depends(get_db),
+    force_delete: bool = Query(False, description="Forcefully remove all tickets"),
+):
+    try:
+        deleted_count, total_tickets = await tickets_crud.delete_all_tickets(
+            db=db, force_delete=force_delete
+        )
+        if deleted_count == 0:
+            return {
+                "message": f"No tickets were deleted. {total_tickets} remaining tickets."
+            }
+        return {
+            "message": f"{deleted_count} tickets deleted. {total_tickets} remaining tickets."
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Cannot delete tickets because of: {str(e)}"
+        )

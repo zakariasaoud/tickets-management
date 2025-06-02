@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from app.models.models import Ticket
 from app.schemas.tickets import (
     TicketOut,
@@ -181,3 +181,53 @@ async def close_ticket_by_id(
     await db.commit()
     await db.refresh(ticket)
     return TicketOut.from_orm(ticket)
+
+
+async def delete_ticket_by_id(
+    db: AsyncSession, ticket_id: str, force_delete: bool = False
+) -> None:
+    """
+    Delete a ticket that is closed, or if force_delete is True.
+
+    Args:
+        db (AsyncSession): The async SQLAlchemy database session.
+        ticket_id (str): The ticket ID.
+        force_delete (bool): To can ticket any tickets, even if his status in ["open","stalled"]
+
+    Returns:
+        None
+    """
+    ticket_uuid = validate_uuid(ticket_id)
+
+    result = await db.execute(select(Ticket).where(Ticket.id == ticket_uuid))
+    ticket = result.scalar_one_or_none()
+
+    if not ticket:
+        raise NotFoundError("Ticket", ticket_id)
+
+    if ticket.status != TicketStatus.closed and not force_delete:
+        raise InvalidCloseTransitionError("Cannot delete not closed ticket.")
+
+    await db.delete(ticket)
+    await db.commit()
+
+
+async def delete_all_tickets(db: AsyncSession, force_delete: bool = False) -> int:
+    """
+    Delete all tickets that are closed, or all tickets if force_delete is True.
+
+    Args:
+        db (AsyncSession): The async SQLAlchemy session.
+        force_delete (bool): If True, delete all tickets regardless of status.
+
+    Returns:
+        int: Number of deleted tickets.
+    """
+    query = delete(Ticket)
+    if not force_delete:
+        query = query.where(Ticket.status == TicketStatus.closed)
+
+    result = await db.execute(query)
+    await db.commit()
+    total_tickets = await db.scalar(select(func.count()).select_from(Ticket))
+    return result.rowcount, total_tickets
