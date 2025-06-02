@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.models.models import Base
-from app.routes import tickets_api
+from app.routers import tickets_api
 from app.db.sqlite import create_sqlite_connection, close_sqlite_connection, database
 
 app = FastAPI(

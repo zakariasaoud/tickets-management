@@ -40,7 +40,7 @@ async def close_sqlite_connection():
             print(f"Cannot close the SQLITE connection because of {e}")
 
 
-# This function will be used as Dependency for our FastAPI routes
+# This function will be used as Dependency for our FastAPI routers
 async def get_db() -> AsyncSession:
     if not database.async_session:
         raise RuntimeError("SQLITE database is not connected")
