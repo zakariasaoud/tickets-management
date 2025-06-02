@@ -126,7 +126,7 @@ In this section, we document the main routes available in the application,
 including their methods, paths, and example usages.
 
 
-### ➕ `POST /tickets/add_ticket`
+### ❯ `POST /tickets/add_ticket`
 
 Create a new ticket by providing a title. Description and status are optional.
 
@@ -149,7 +149,7 @@ Create a new ticket by providing a title. Description and status are optional.
 }
 ```
 
-### ➕ `GET /tickets/list_tickets`
+### ❯ `GET /tickets/list_tickets`
 
 List all tickets with optional pagination.
 
@@ -190,7 +190,7 @@ List all tickets with optional pagination.
 }
 ```
 
-### ➕ `GET /tickets/get_ticket/{ticket_id}`
+### ❯ `GET /tickets/get_ticket/{ticket_id}`
 
 Retrieve a ticket by its unique ID.
 
@@ -205,7 +205,7 @@ Retrieve a ticket by its unique ID.
 `GET http://localhost:8000/tickets/get_ticket/12345678-1234-5678-1234-567812345679`
 
 
-### ➕ `PUT /tickets/update_ticket/{ticket_id}`
+### ❯ `PUT /tickets/update_ticket/{ticket_id}`
 
 Update an existing ticket by its unique ID.
 
@@ -227,7 +227,7 @@ Update an existing ticket by its unique ID.
 }
 ```
 
-### ➕ `PATCH /tickets/{ticket_id}/close`
+### ❯ `PATCH /tickets/{ticket_id}/close`
 
 Close an existing ticket by its unique ID.
 
@@ -240,7 +240,7 @@ Close an existing ticket by its unique ID.
 #### 🔗 Example Request URL
 `GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
 
-### ➕ `DELETE /delete_ticket/{ticket_id}`
+### ❯ `DELETE /delete_ticket/{ticket_id}`
 
 Delete a ticket by its unique ID.
 
@@ -255,7 +255,7 @@ Delete a ticket by its unique ID.
 #### 🔗 Example Request URL
 `DELETE http://localhost:8000/tickets/delete_ticket/12345678-1234-5678-1234-567812345679?force_delete=True`
 
-### ➕ `DELETE /delete_all_tickets`
+### ❯ `DELETE /delete_all_tickets`
 
 Delete all tickets, with option to force delete regardless of status.
 
