@@ -41,6 +41,7 @@ ticket-management
 ├── README.md
 ├── docker-compose.yaml
 ├── requirements.txt
+├── pyproject.toml
 └── .env
 ```
 We can find the following files :
@@ -56,6 +57,7 @@ We can find the following files :
 - conftest.py : Defines shared test fixtures used in both unit and integration tests.
 - main.py : The main entry point of the FastAPI application.
 - .env : Stores environment variables, including the path to the SQLite database.
+- pyproject.toml: Configures project tools like Ruff for linting, formatting, and import sorting.
 
 ### API Routes Overview
 | Method | Path                               | Description           |
@@ -124,7 +126,7 @@ In this section, we document the main routes available in the application,
 including their methods, paths, and example usages.
 
 
-###s ➕ `POST /tickets/add_ticket`
+### ➕ `POST /tickets/add_ticket`
 
 Create a new ticket by providing a title. Description and status are optional.
 
