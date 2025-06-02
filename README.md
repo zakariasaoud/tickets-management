@@ -7,7 +7,7 @@ This is a FastAPI application for managing tickets using an asynchronous SQLite 
 A docker-compose file is included to easily run the application inside a Docker container while persisting data in the database.
 ### Directory Structure
 ```
-FastApiEvents
+ticket-management
 ├── app
 │   ├── config
 │   │   └── settings.py
@@ -113,6 +113,24 @@ FastAPI automatically generates documentation based on the specifications of the
 You can access the interactive API documentation at http://localhost:8000/docs.
 You can also use Postman to test the different routes. For example:
 
+- To list all events, we use the following url :
+
+```http://localhost:8000/events/list_events/  ```
+
+- To create new event, we use the following url :
+
+```http://localhost:8000/events/add_event/```
+
+Then we send the following event attribute on the request body :
+```
+{
+  "start": <your-start-datetime>,
+  "tags": [<your-tag-value>, <your-tag2-value> ....]
+}
+```
+- To replace the tags of an event, we can use the following url :
+
+```http://localhost:8000/events/update_event_tags/<your-event-id>/?tags=<your-tag-value>&replace=True```
 
 ## Testing
 ### 🔧 Unit Tests:
