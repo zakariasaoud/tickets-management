@@ -1,7 +1,7 @@
 # Tickets management with FastAPI
 
 ![Tests](https://img.shields.io/badge/Tests-passing-brightgreen)
-![Coverage](https://img.shields.io/badge/Coverage-90%25-yellow)
+![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
 ![Ruff](https://img.shields.io/badge/Ruff-passed-brightgreen)
 
 ##  Description
