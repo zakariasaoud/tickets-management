@@ -292,7 +292,7 @@ pytest .\tests --disable-warnings
 
 ### 📊 Running Tests with Coverage
 
-The current test coverage is 90%. 
+The current test coverage is 90%. Click below to view the test coverage screenshot for the project:
 
 <details>
 <summary>🧪 Test Coverage Screenshot</summary>
