@@ -290,7 +290,17 @@ pytest .\tests --disable-warnings
 
 ### 📊 Running Tests with Coverage
 
-The current test coverage is 90%. To run all tests with coverage reporting, you can use the following commands:
+The current test coverage is 90%. 
+
+<details>
+<summary>🧪 Test Coverage Screenshot</summary>
+
+![Coverage Screenshot](couverage.png)
+
+</details>
+
+
+To run all tests with coverage reporting, you can use the following commands:
 
 ```bash
 coverage run --branch -m pytest tests/
