@@ -121,11 +121,9 @@ Afterward, the project will be live at [http://localhost:8000](http://localhost:
 
 ## Documentation
 
-FastAPI automatically generates documentation based on the specifications of the endpoints you’ve defined. 
-You can access the interactive API documentation at http://localhost:8000/docs.
-You can also use Postman to test the different routes. 
+FastAPI automatically generates documentation based on the specifications of the endpoints that we have defined. You can access the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs). 
 In this section, we document the main routes available in the application, 
-including their methods, paths, and example usages.
+including their methods, paths, and example usages. Feel free to use Postman to test the various API routes. 
 
 
 ### ❯ `POST /tickets/`
