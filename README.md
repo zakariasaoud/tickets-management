@@ -111,11 +111,12 @@ cd tickets-management
 
 # Run Docker Compose to start the application and its dependencies
 docker-compose up --build web
+```
+**Note:** To relaunch the project in subsequent runs, use:
 
-# Launch the project again (for subsequent runs)
+```bash
 docker-compose run web
 ```
-
 Afterward, the project will be live at [http://localhost:8000](http://localhost:8000).
 
 ## Documentation
