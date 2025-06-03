@@ -60,15 +60,15 @@ We can find the following files :
 - pyproject.toml: Configures project tools like Ruff for linting, formatting, and import sorting.
 
 ### API Routes Overview
-| Method | Path                               | Description           |
-|--------|------------------------------------|-----------------------|
-| POST   | /tickets/add_ticket                | Create a new ticket   |
-| GET    | /tickets/list_tickets              | List all tickets      |
-| GET    | /tickets/get_ticket/{ticket_id}    | Retrieve ticket by ID |
-| PUT    | /tickets/update_ticket/{ticket_id} | Update a ticket by ID |
-| PATCH  | /tickets/{ticket_id}/close         | Close a ticket        |
-| DELETE | /tickets/delete_ticket/{ticket_id} | Delete a ticket       |
-| DELETE | /tickets/delete_all_tickets        | Delete all tickets    |
+| Method | Path                       | Description           |
+|--------|----------------------------|-----------------------|
+| POST   | /tickets/                  | Create a new ticket   |
+| GET    | /tickets/                  | List all tickets      |
+| GET    | /tickets/{ticket_id}       | Retrieve ticket by ID |
+| PUT    | /tickets/{ticket_id}       | Update a ticket by ID |
+| PATCH  | /tickets/{ticket_id}/close | Close a ticket        |
+| DELETE | /tickets/{ticket_id}       | Delete a ticket       |
+| DELETE | /tickets/                  | Delete all tickets    |
 
 ##  Getting Started
 
@@ -126,7 +126,7 @@ In this section, we document the main routes available in the application,
 including their methods, paths, and example usages.
 
 
-### ❯ `POST /tickets/add_ticket`
+### ❯ `POST /tickets/`
 
 Create a new ticket by providing a title. Description and status are optional.
 
@@ -137,7 +137,7 @@ Create a new ticket by providing a title. Description and status are optional.
 
 #### 🔗 Example Request URL
 
-`POST http://localhost:8000/tickets/add_ticket?reject_duplicates=false`
+`POST http://localhost:8000/tickets/?reject_duplicates=false`
 
 #### 🔗 Request Body (JSON)
 
@@ -149,7 +149,7 @@ Create a new ticket by providing a title. Description and status are optional.
 }
 ```
 
-### ❯ `GET /tickets/list_tickets`
+### ❯ `GET /tickets/`
 
 List all tickets with optional pagination.
 
@@ -162,7 +162,7 @@ List all tickets with optional pagination.
 
 #### 🔗 Example Request URL
 
-`GET http://localhost:8000/tickets/list_tickets`
+`GET http://localhost:8000/tickets/`
 
 #### 🔗 Response (200 OK)
 
@@ -190,7 +190,7 @@ List all tickets with optional pagination.
 }
 ```
 
-### ❯ `GET /tickets/get_ticket/{ticket_id}`
+### ❯ `GET /tickets/{ticket_id}`
 
 Retrieve a ticket by its unique ID.
 
@@ -202,10 +202,10 @@ Retrieve a ticket by its unique ID.
 
 #### 🔗 Example Request URL
 
-`GET http://localhost:8000/tickets/get_ticket/12345678-1234-5678-1234-567812345679`
+`GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679`
 
 
-### ❯ `PUT /tickets/update_ticket/{ticket_id}`
+### ❯ `PUT /tickets/{ticket_id}`
 
 Update an existing ticket by its unique ID.
 
@@ -216,7 +216,7 @@ Update an existing ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket to update.
 
 #### 🔗 Example Request URL
-`PUT http://localhost:8000/tickets/update_ticket/12345678-1234-5678-1234-567812345679`
+`PUT http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679`
 
 #### 🔗 Request Body (JSON)
 
@@ -240,7 +240,7 @@ Close an existing ticket by its unique ID.
 #### 🔗 Example Request URL
 `GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
 
-### ❯ `DELETE /delete_ticket/{ticket_id}`
+### ❯ `DELETE /tickets/{ticket_id}`
 
 Delete a ticket by its unique ID.
 
@@ -253,9 +253,9 @@ Delete a ticket by its unique ID.
   - `force_delete` (bool, optional, default: false): Force deletion even if the ticket is not closed.
 
 #### 🔗 Example Request URL
-`DELETE http://localhost:8000/tickets/delete_ticket/12345678-1234-5678-1234-567812345679?force_delete=True`
+`DELETE http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True`
 
-### ❯ `DELETE /delete_all_tickets`
+### ❯ `DELETE /tickets/`
 
 Delete all tickets, with option to force delete regardless of status.
 
@@ -266,7 +266,7 @@ Delete all tickets, with option to force delete regardless of status.
   - `force_delete` (bool, optional, default: false): Force deletion of all tickets regardless of status.
 
 #### 🔗 Example Request URL
-`DELETE http://localhost:8000/tickets/delete_all_tickets?force_delete=True`
+`DELETE http://localhost:8000/tickets/?force_delete=True`
 
 
 ## Testing

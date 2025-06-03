@@ -25,7 +25,7 @@ async def test_update_ticket_success(
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.put(
-                f"/tickets/update_ticket/{ticket_id}", json=ticket_update_data
+                f"/tickets/{ticket_id}", json=ticket_update_data
             )
 
     assert response.status_code == 200
@@ -49,7 +49,7 @@ async def test_update_ticket_not_found(ticket_id, ticket_update_data):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.put(
-                f"/tickets/update_ticket/{ticket_id}", json=ticket_update_data
+                f"/tickets/{ticket_id}", json=ticket_update_data
             )
 
     assert response.status_code == 404
@@ -68,7 +68,7 @@ async def test_update_ticket_server_error(ticket_id, ticket_update_data):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.put(
-                f"/tickets/update_ticket/{ticket_id}", json=ticket_update_data
+                f"/tickets/{ticket_id}", json=ticket_update_data
             )
 
     assert response.status_code == 500
@@ -87,7 +87,7 @@ async def test_update_ticket_unexpected_error(ticket_id, ticket_update_data):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.put(
-                f"/tickets/update_ticket/{ticket_id}", json=ticket_update_data
+                f"/tickets/{ticket_id}", json=ticket_update_data
             )
 
     assert response.status_code == 500
@@ -102,23 +102,18 @@ async def test_update_ticket_with_title_too_long(long_title_ticket):
     valid_uuid = "123e4567-e89b-12d3-a456-426614174000"
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.put(
-            f"/tickets/update_ticket/{valid_uuid}", json=long_title_ticket
-        )
+        response = await client.put(f"/tickets/{valid_uuid}", json=long_title_ticket)
     assert response.status_code == 422
 
 
 @pytest.mark.asyncio
-async def test_update_ticket_with_bad_status(bad_status_ticket):
+async def test_update_ticket_with_bad_status(ticket_id, bad_status_ticket):
     """
     Test updating a ticket with a wrong status
     """
-    valid_uuid = "123e4567-e89b-12d3-a456-426614174000"
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.put(
-            f"/tickets/update_ticket/{valid_uuid}", json=bad_status_ticket
-        )
+        response = await client.put(f"/tickets/{ticket_id}", json=bad_status_ticket)
     assert response.status_code == 422
 
 
@@ -136,7 +131,7 @@ async def test_update_ticket_empty_data(
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.put(
-                f"/tickets/update_ticket/{ticket_id}", json=ticket_update_empty_data
+                f"/tickets/{ticket_id}", json=ticket_update_empty_data
             )
 
     assert response.status_code == 200

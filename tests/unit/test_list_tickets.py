@@ -19,9 +19,7 @@ async def test_list_tickets_success(mock_session, fake_tickets_list):
     ) as mocked_get:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(
-                "/tickets/list_tickets", params={"skip": 0, "limit": 10}
-            )
+            response = await client.get("/tickets/", params={"skip": 0, "limit": 10})
 
     assert response.status_code == 200
     assert response.json()["total"] == 2
@@ -40,9 +38,7 @@ async def test_list_tickets_empty(mock_session, fake_empty_tickets_list):
     ) as mocked_get:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(
-                "/tickets/list_tickets", params={"skip": 0, "limit": 10}
-            )
+            response = await client.get("/tickets/", params={"skip": 0, "limit": 10})
 
     assert response.status_code == 200
     assert response.json()["results"] == []
@@ -57,9 +53,7 @@ async def test_list_tickets_invalid_params():
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get(
-            "/tickets/list_tickets", params={"skip": -2, "limit": 10}
-        )
+        response = await client.get("/tickets/", params={"skip": -2, "limit": 10})
 
     assert response.status_code == 422
     assert "detail" in response.json()
@@ -80,9 +74,7 @@ async def test_list_tickets_server_side_error(mock_session):
     ) as mocked_get:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(
-                "/tickets/list_tickets", params={"skip": 0, "limit": 10}
-            )
+            response = await client.get("/tickets/", params={"skip": 0, "limit": 10})
 
     assert response.status_code == 500
     assert "Cannot get the tickets list" in response.json()["detail"]

@@ -18,9 +18,7 @@ async def test_get_ticket_success(fake_created_ticket):
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(
-                "/tickets/get_ticket/12345678-1234-5678-1234-567812345678"
-            )
+            response = await client.get("/tickets/12345678-1234-5678-1234-567812345678")
 
     assert response.status_code == 200
     assert response.json()["id"] == str(fake_created_ticket["id"])
@@ -35,7 +33,7 @@ async def test_get_ticket_invalid_ticket_id():
     invalid_ticket_id = "not-a-uuid"
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get(f"/tickets/get_ticket/{invalid_ticket_id}")
+        response = await client.get(f"/tickets/{invalid_ticket_id}")
 
     assert response.status_code == 422
     assert "Input should be a valid UUID" in response.text
@@ -53,7 +51,7 @@ async def test_get_ticket_not_found():
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(f"/tickets/get_ticket/{ticket_id}")
+            response = await client.get(f"/tickets/{ticket_id}")
 
     assert response.status_code == 404
     assert response.json() == {"detail": f"Ticket with ID {ticket_id} is not found."}
@@ -70,9 +68,7 @@ async def test_get_ticket_server_error(fake_created_ticket):
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get(
-                "/tickets/get_ticket/12345678-1234-5678-1234-567812345678"
-            )
+            response = await client.get("/tickets/12345678-1234-5678-1234-567812345678")
 
     assert response.status_code == 500
     assert "Cannot get the ticket" in response.json()["detail"]

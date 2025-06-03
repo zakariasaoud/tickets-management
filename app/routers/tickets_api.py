@@ -22,7 +22,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/add_ticket",
+    "/",
     summary="Create a new ticket",
     description="Creating new ticket, by giving the ticket title. "
     "The ticket description and the status are optionals",
@@ -56,7 +56,7 @@ async def create_new_ticket(
 
 
 @router.get(
-    "/list_tickets",
+    "/",
     summary="List all tickets",
     description="Listing all tickets. To specify how many tickets you would like "
     "to get, you can use skip and limit parameters",
@@ -79,7 +79,7 @@ async def list_tickets(
 
 
 @router.get(
-    "/get_ticket/{ticket_id}",
+    "/{ticket_id}",
     summary="Get a ticket from its ID",
     description="Get a ticket by its ID if it exists..",
     response_model=TicketOut,
@@ -98,7 +98,7 @@ async def get_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(get
 
 
 @router.put(
-    "/update_ticket/{ticket_id}",
+    "/{ticket_id}",
     summary="Update a ticket from its ID",
     description="Get an existing ticket by its ID.",
     response_model=TicketOut,
@@ -150,7 +150,7 @@ async def close_ticket(ticket_id: UUID = Path(...), db: AsyncSession = Depends(g
 
 
 @router.delete(
-    "/delete_ticket/{ticket_id}",
+    "/{ticket_id}",
     summary="Delete a ticket",
     description="Delete a ticket that is already closed. If force_delete=true, "
     "delete the ticket regardless of his status.",
@@ -178,7 +178,7 @@ async def delete_ticket(
 
 
 @router.delete(
-    "/delete_all_tickets",
+    "/",
     summary="Delete all tickets",
     description="Delete all closed tickets. "
     "If force_delete=true, delete all tickets regardless of status.",

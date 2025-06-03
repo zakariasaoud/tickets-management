@@ -17,7 +17,7 @@ async def test_delete_ticket_success(ticket_id):
     ) as mock_delete:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete(f"/tickets/delete_ticket/{ticket_id}")
+            response = await client.delete(f"/tickets/{ticket_id}")
 
     assert response.status_code == 204
     mock_delete.assert_awaited_once_with(
@@ -35,9 +35,7 @@ async def test_delete_ticket_force_success(ticket_id):
     ) as mock_delete:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete(
-                f"/tickets/delete_ticket/{ticket_id}?force_delete=true"
-            )
+            response = await client.delete(f"/tickets/{ticket_id}?force_delete=true")
 
     assert response.status_code == 204
     mock_delete.assert_awaited_once_with(db=ANY, ticket_id=ticket_id, force_delete=True)
@@ -54,7 +52,7 @@ async def test_delete_ticket_not_found(ticket_id):
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete(f"/tickets/delete_ticket/{ticket_id}")
+            response = await client.delete(f"/tickets/{ticket_id}")
 
     assert response.status_code == 404
     assert f"Ticket with ID {ticket_id} is not found." in response.text
@@ -73,7 +71,7 @@ async def test_delete_ticket_not_closed_error(ticket_id):
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete(f"/tickets/delete_ticket/{ticket_id}")
+            response = await client.delete(f"/tickets/{ticket_id}")
 
     assert response.status_code == 400
     assert "Cannot delete an open ticket" in response.text
@@ -90,7 +88,7 @@ async def test_delete_ticket_server_error(ticket_id):
     ) as mock_delete:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete(f"/tickets/delete_ticket/{ticket_id}")
+            response = await client.delete(f"/tickets/{ticket_id}")
 
     assert response.status_code == 500
     assert "Cannot delete the ticket" in response.json()["detail"]
@@ -111,7 +109,7 @@ async def test_delete_all_tickets_success():
     ) as mock_delete:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete("/tickets/delete_all_tickets")
+            response = await client.delete("/tickets/")
 
     assert response.status_code == 200
     assert response.json() == {"message": "3 tickets deleted. 0 remaining tickets."}
@@ -129,7 +127,7 @@ async def test_delete_all_tickets_server_error():
     ) as mock_delete:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.delete("/tickets/delete_all_tickets")
+            response = await client.delete("/tickets/")
 
     assert response.status_code == 500
     assert "Cannot delete tickets" in response.json()["detail"]

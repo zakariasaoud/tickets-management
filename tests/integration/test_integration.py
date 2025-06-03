@@ -16,7 +16,7 @@ async def test_add_ticket():
     }
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post("/tickets/add_ticket", json=ticket_data)
+        response = await client.post("/tickets/", json=ticket_data)
 
     assert response.status_code == 201
     data = response.json()
@@ -34,7 +34,7 @@ async def test_add_ticket_with_reject_duplicates():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.post(
-            "/tickets/add_ticket?reject_duplicates=True", json=ticket_data
+            "/tickets/?reject_duplicates=True", json=ticket_data
         )
 
     assert response.status_code == 400
@@ -48,9 +48,7 @@ async def test_add_ticket_with_reject_duplicates():
 async def test_list_tickets():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.get(
-            "/tickets/list_tickets", params={"skip": 0, "limit": 10}
-        )
+        response = await client.get("/tickets/", params={"skip": 0, "limit": 10})
 
     assert response.status_code == 200
     data = response.json()
@@ -65,9 +63,9 @@ async def test_get_ticket_by_id():
     ticket_data = {"title": "Sample", "description": "Testing get ticket by ID"}
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        created_ticket = await client.post("/tickets/add_ticket", json=ticket_data)
+        created_ticket = await client.post("/tickets/", json=ticket_data)
         ticket_id = created_ticket.json()["id"]
-        get_ticket = await client.get(f"/tickets/get_ticket/{ticket_id}")
+        get_ticket = await client.get(f"/tickets/{ticket_id}")
 
     assert get_ticket.status_code == 200
     data = get_ticket.json()
@@ -80,12 +78,10 @@ async def test_update_ticket():
     ticket_data = {"title": "Old title", "description": "Test Updating ticket."}
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        ticket_to_update = await client.post("/tickets/add_ticket", json=ticket_data)
+        ticket_to_update = await client.post("/tickets/", json=ticket_data)
         ticket_id = ticket_to_update.json()["id"]
         update_data = {"title": "Updated title", "description": "Updated desc"}
-        updated_ticket = await client.put(
-            f"/tickets/update_ticket/{ticket_id}", json=update_data
-        )
+        updated_ticket = await client.put(f"/tickets/{ticket_id}", json=update_data)
 
     assert updated_ticket.status_code == 200
     assert updated_ticket.json()["title"] == "Updated title"
@@ -97,11 +93,11 @@ async def test_update_ticket_empty_data():
     ticket_data = {"title": "Old title 1", "description": "Test Updating ticket empty."}
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        ticket_to_update = await client.post("/tickets/add_ticket", json=ticket_data)
+        ticket_to_update = await client.post("/tickets/", json=ticket_data)
         ticket_id = ticket_to_update.json()["id"]
         update_empty_data = {}
         updated_ticket = await client.put(
-            f"/tickets/update_ticket/{ticket_id}", json=update_empty_data
+            f"/tickets/{ticket_id}", json=update_empty_data
         )
 
     assert updated_ticket.status_code == 200
@@ -114,7 +110,7 @@ async def test_close_ticket():
     ticket_data = {"title": "To Close ticket", "description": "Closing this ticket"}
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        ticket_to_close = await client.post("/tickets/add_ticket", json=ticket_data)
+        ticket_to_close = await client.post("/tickets/", json=ticket_data)
         ticket_id = ticket_to_close.json()["id"]
         closed_ticket = await client.patch(f"/tickets/{ticket_id}/close")
 
@@ -142,7 +138,7 @@ async def test_close_already_closed_ticket():
     }
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        ticket_to_close = await client.post("/tickets/add_ticket", json=ticket_data)
+        ticket_to_close = await client.post("/tickets/", json=ticket_data)
         ticket_id = ticket_to_close.json()["id"]
         closed_ticket = await client.patch(f"/tickets/{ticket_id}/close")
 
@@ -155,10 +151,10 @@ async def test_delete_ticket():
     ticket_data = {"title": "Ticket To delete", "description": "Will be deleted"}
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        ticket_to_delete = await client.post("/tickets/add_ticket", json=ticket_data)
+        ticket_to_delete = await client.post("/tickets/", json=ticket_data)
         ticket_id = ticket_to_delete.json()["id"]
         await client.patch(f"/tickets/{ticket_id}/close")
-        deletion = await client.delete(f"/tickets/delete_ticket/{ticket_id}")
+        deletion = await client.delete(f"/tickets/{ticket_id}")
     assert deletion.status_code == 204
 
 
@@ -167,7 +163,7 @@ async def test_delete_all_tickets_no_force():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         response = await client.delete(
-            "/tickets/delete_all_tickets",
+            "/tickets/",
         )
     assert response.status_code == 200
     assert "message" in response.json()
@@ -178,9 +174,7 @@ async def test_delete_all_tickets_no_force():
 async def test_delete_all_tickets_force():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.delete(
-            "/tickets/delete_all_tickets", params={"force_delete": True}
-        )
+        response = await client.delete("/tickets/", params={"force_delete": True})
     assert response.status_code == 200
     assert "message" in response.json()
     assert response.json()["message"] == "4 tickets deleted. 0 remaining tickets."
@@ -190,7 +184,7 @@ async def test_delete_all_tickets_force():
 async def test_delete_all_not_tickets_for_deletion():
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.delete("/tickets/delete_all_tickets")
+        response = await client.delete("/tickets/")
     assert response.status_code == 200
     assert "message" in response.json()
     assert response.json()["message"] == "No tickets were deleted. 0 remaining tickets."

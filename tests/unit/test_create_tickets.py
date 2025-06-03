@@ -17,7 +17,7 @@ async def test_create_ticket_success(ticket_input, fake_created_ticket):
     ):
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.post("/tickets/add_ticket", json=ticket_input)
+            response = await client.post("/tickets/", json=ticket_input)
             assert response.status_code == 201
             data = response.json()
             assert data["title"] == ticket_input["title"]
@@ -34,7 +34,7 @@ async def test_add_ticket_title_too_short(short_title_ticket):
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post("/tickets/add_ticket", json=short_title_ticket)
+        response = await client.post("/tickets/", json=short_title_ticket)
     assert response.status_code == 422
 
 
@@ -45,7 +45,7 @@ async def test_add_ticket_different_status(bad_status_ticket):
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post("/tickets/add_ticket", json=bad_status_ticket)
+        response = await client.post("/tickets/", json=bad_status_ticket)
     assert response.status_code == 422
 
 
@@ -56,7 +56,7 @@ async def test_add_ticket_title_too_long(long_title_ticket):
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post("/tickets/add_ticket", json=long_title_ticket)
+        response = await client.post("/tickets/", json=long_title_ticket)
     assert response.status_code == 422
 
 
@@ -67,9 +67,7 @@ async def test_add_ticket_description_too_long(long_description_ticket):
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post(
-            "/tickets/add_ticket", json=long_description_ticket
-        )
+        response = await client.post("/tickets/", json=long_description_ticket)
     assert response.status_code == 422
 
 
@@ -80,7 +78,7 @@ async def test_add_ticket_missing_title(missing_title_ticket):
     """
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
-        response = await client.post("/tickets/add_ticket", json=missing_title_ticket)
+        response = await client.post("/tickets/", json=missing_title_ticket)
     assert response.status_code == 422
 
 
@@ -95,7 +93,7 @@ async def test_add_ticket_server_side_error(ticket_input):
     ) as mocked_get:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.post("/tickets/add_ticket", json=ticket_input)
+            response = await client.post("/tickets/", json=ticket_input)
 
     assert response.status_code == 500
     assert "Cannot create new ticket" in response.json()["detail"]
