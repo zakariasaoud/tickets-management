@@ -209,9 +209,10 @@ GET http://localhost:8000/tickets/
 ```
 
 #### 🔗 Example `curl` Command
-`curl -X GET "http://localhost:8000/tickets/" \
+```bash
+curl -X GET "http://localhost:8000/tickets/" \
   -H "Accept: application/json"
-`
+```
 
 
 ### ❯ `GET /tickets/{ticket_id}`
@@ -230,8 +231,10 @@ GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679
 ```
 
 #### 🔗 Example `curl` Command
-`curl -X GET "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679" \
-  -H "Accept: application/json"`  
+```bash
+curl -X GET "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679" \
+  -H "Accept: application/json"
+```
 
 ### ❯ `PUT /tickets/{ticket_id}`
 
@@ -283,7 +286,9 @@ PATCH http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close
 ```
 
 #### 🔗 Example `curl` Command
-`curl -X PATCH "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close"`
+```bash
+curl -X PATCH "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close"`
+```
 
 ### ❯ `DELETE /tickets/{ticket_id}`
 
@@ -303,8 +308,9 @@ DELETE http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_
 ```
 
 #### 🔗 Example `curl` Command
-`curl -X DELETE "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True"`
-
+```bash
+curl -X DELETE "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True"`
+```
 
 ### ❯ `DELETE /tickets/`
 
@@ -322,8 +328,9 @@ DELETE http://localhost:8000/tickets/?force_delete=True
 ```
 
 #### 🔗 Example `curl` Command
-`curl -X DELETE "http://localhost:8000/tickets/?force_delete=True"`
-
+```bash
+curl -X DELETE "http://localhost:8000/tickets/?force_delete=True"`
+```
 
 ## Testing
 ### 🔧 Unit Tests:
