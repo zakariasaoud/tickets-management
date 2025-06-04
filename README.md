@@ -144,7 +144,9 @@ Create a new ticket by providing a title. Description and status are optional.
   - `reject_duplicates` (bool, optional): Prevents creating tickets with the same title. Default: `false`.
 
 #### 🔗 Example Request URL
-`POST http://localhost:8000/tickets/?reject_duplicates=false`
+```bash
+POST http://localhost:8000/tickets/?reject_duplicates=false
+```
 
 #### 🔗 Request Body (JSON)
 ```json
@@ -177,7 +179,9 @@ List all tickets with optional pagination.
   - `limit` (int, optional, default: 10): Maximum number of tickets to return. Must be between 0 and 100.
 
 #### 🔗 Example Request URL
-`GET http://localhost:8000/tickets/`
+```bash
+GET http://localhost:8000/tickets/
+```
 
 #### 🔗 Response (200 OK)
 ```json
@@ -221,7 +225,9 @@ Retrieve a ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket.
 
 #### 🔗 Example Request URL
-`GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679`
+```bash
+GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679
+```
 
 #### 🔗 Example `curl` Command
 `curl -X GET "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679" \
@@ -238,7 +244,9 @@ Update an existing ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket to update.
 
 #### 🔗 Example Request URL
-`PUT http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679`
+```bash
+PUT http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679
+```
 
 #### 🔗 Request Body (JSON)
 
@@ -270,7 +278,9 @@ Close an existing ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket to close.
 
 #### 🔗 Example Request URL
-`PATCH http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
+```bash
+PATCH http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close
+```
 
 #### 🔗 Example `curl` Command
 `curl -X PATCH "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close"`
@@ -288,7 +298,9 @@ Delete a ticket by its unique ID.
   - `force_delete` (bool, optional, default: false): Force deletion even if the ticket is not closed.
 
 #### 🔗 Example Request URL
-`DELETE http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True`
+```bash
+DELETE http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True
+```
 
 #### 🔗 Example `curl` Command
 `curl -X DELETE "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True"`
@@ -305,7 +317,9 @@ Delete all tickets, with option to force delete regardless of status.
   - `force_delete` (bool, optional, default: false): Force deletion of all tickets regardless of status.
 
 #### 🔗 Example Request URL
-`DELETE http://localhost:8000/tickets/?force_delete=True`
+```bash
+DELETE http://localhost:8000/tickets/?force_delete=True
+```
 
 #### 🔗 Example `curl` Command
 `curl -X DELETE "http://localhost:8000/tickets/?force_delete=True"`
