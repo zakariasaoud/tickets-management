@@ -1,6 +1,7 @@
 # Tickets management with FastAPI
 
-![Coverage](https://img.shields.io/badge/Coverage-90%25-yellow)
+![Tests](https://img.shields.io/badge/Tests-passing-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-90%25-brightgreen)
 ![Ruff](https://img.shields.io/badge/Ruff-passed-brightgreen)
 
 ##  Description
@@ -110,20 +111,19 @@ cd tickets-management
 
 # Run Docker Compose to start the application and its dependencies
 docker-compose up --build web
+```
+**Note:** To relaunch the project in subsequent runs, use:
 
-# Launch the project again (for subsequent runs)
+```bash
 docker-compose run web
 ```
-
 Afterward, the project will be live at [http://localhost:8000](http://localhost:8000).
 
 ## Documentation
 
-FastAPI automatically generates documentation based on the specifications of the endpoints you’ve defined. 
-You can access the interactive API documentation at http://localhost:8000/docs.
-You can also use Postman to test the different routes. 
+FastAPI automatically generates documentation based on the specifications of the endpoints that we have defined. You can access the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs). 
 In this section, we document the main routes available in the application, 
-including their methods, paths, and example usages.
+including their methods, paths, and example usages. Feel free to use Postman to test the various API routes. 
 
 
 ### ❯ `POST /tickets/`
@@ -290,7 +290,7 @@ pytest .\tests --disable-warnings
 
 ### 📊 Running Tests with Coverage
 
-The current test coverage is 90%. 
+The current test coverage is 90%. Click below to view the test coverage screenshot for the project:
 
 <details>
 <summary>🧪 Test Coverage Screenshot</summary>
