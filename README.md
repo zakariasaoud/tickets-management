@@ -61,15 +61,15 @@ We can find the following files :
 - pyproject.toml: Configures project tools like Ruff for linting, formatting, and import sorting.
 
 ### API Routes Overview
-| Method | Path                       | Description           |
-|--------|----------------------------|-----------------------|
-| POST   | /tickets/                  | Create a new ticket   |
-| GET    | /tickets/                  | List all tickets      |
-| GET    | /tickets/{ticket_id}       | Retrieve ticket by ID |
-| PUT    | /tickets/{ticket_id}       | Update a ticket by ID |
-| PATCH  | /tickets/{ticket_id}/close | Close a ticket        |
-| DELETE | /tickets/{ticket_id}       | Delete a ticket       |
-| DELETE | /tickets/                  | Delete all tickets    |
+| Method | Path                         | Description           |
+|--------|------------------------------|-----------------------|
+| POST   | `/tickets/`                  | Create a new ticket   |
+| GET    | `/tickets/`                  | List all tickets      |
+| GET    | `/tickets/{ticket_id}`       | Retrieve ticket by ID |
+| PUT    | `/tickets/{ticket_id}`       | Update a ticket by ID |
+| PATCH  | `/tickets/{ticket_id}/close` | Close a ticket        |
+| DELETE | `/tickets/{ticket_id}`       | Delete a ticket       |
+| DELETE | `/tickets/`                  | Delete all tickets    |
 
 ##  Getting Started
 
@@ -121,9 +121,17 @@ Afterward, the project will be live at [http://localhost:8000](http://localhost:
 
 ## Documentation
 
-FastAPI automatically generates documentation based on the specifications of the endpoints that we have defined. You can access the interactive API documentation at [http://localhost:8000/docs](http://localhost:8000/docs). 
-In this section, we document the main routes available in the application, 
-including their methods, paths, and example usages. Feel free to use Postman to test the various API routes. 
+FastAPI automatically generates documentation based on the specifications of the endpoints that we have defined. 
+You can access the interactive API documentation here:
+
+- **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs),
+an interactive, web-based interface to explore and test the API endpoints with live requests.
+
+- **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc), 
+a clean, readable API reference documentation designed for easy navigation and overview.
+
+In this section, we document the main routes available in the application, including their methods, paths, and example usages. 
+Feel free to use Postman or curl to test the various API routes. 
 
 
 ### ❯ `POST /tickets/`
@@ -136,17 +144,25 @@ Create a new ticket by providing a title. Description and status are optional.
   - `reject_duplicates` (bool, optional): Prevents creating tickets with the same title. Default: `false`.
 
 #### 🔗 Example Request URL
-
 `POST http://localhost:8000/tickets/?reject_duplicates=false`
 
 #### 🔗 Request Body (JSON)
-
 ```json
 {
   "title": "Server down",
   "description": "The API server is not responding",
   "status": "open"
 }
+```
+
+#### 🔗 Example `curl` Command
+```curl -X POST "http://localhost:8000/tickets/?reject_duplicates=false" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Server down",
+    "description": "The API server is not responding",
+    "status": "open"
+}'
 ```
 
 ### ❯ `GET /tickets/`
@@ -161,11 +177,9 @@ List all tickets with optional pagination.
   - `limit` (int, optional, default: 10): Maximum number of tickets to return. Must be between 0 and 100.
 
 #### 🔗 Example Request URL
-
 `GET http://localhost:8000/tickets/`
 
 #### 🔗 Response (200 OK)
-
 ```json
 {
   "tickets": [
@@ -190,6 +204,12 @@ List all tickets with optional pagination.
 }
 ```
 
+#### 🔗 Example `curl` Command
+`curl -X GET "http://localhost:8000/tickets/" \
+  -H "Accept: application/json"
+`
+
+
 ### ❯ `GET /tickets/{ticket_id}`
 
 Retrieve a ticket by its unique ID.
@@ -201,9 +221,11 @@ Retrieve a ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket.
 
 #### 🔗 Example Request URL
-
 `GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679`
 
+#### 🔗 Example `curl` Command
+`curl -X GET "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679" \
+  -H "Accept: application/json"`  
 
 ### ❯ `PUT /tickets/{ticket_id}`
 
@@ -227,6 +249,16 @@ Update an existing ticket by its unique ID.
 }
 ```
 
+#### 🔗 Example `curl` Command
+```
+curl -X PUT "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "description": "The API server is responding now",
+    "status": "closed"
+}'
+```
+
 ### ❯ `PATCH /tickets/{ticket_id}/close`
 
 Close an existing ticket by its unique ID.
@@ -238,7 +270,10 @@ Close an existing ticket by its unique ID.
   - `ticket_id` (UUID): The unique identifier of the ticket to close.
 
 #### 🔗 Example Request URL
-`GET http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
+`PATCH http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close`
+
+#### 🔗 Example `curl` Command
+`curl -X PATCH "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679/close"`
 
 ### ❯ `DELETE /tickets/{ticket_id}`
 
@@ -255,6 +290,10 @@ Delete a ticket by its unique ID.
 #### 🔗 Example Request URL
 `DELETE http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True`
 
+#### 🔗 Example `curl` Command
+`curl -X DELETE "http://localhost:8000/tickets/12345678-1234-5678-1234-567812345679?force_delete=True"`
+
+
 ### ❯ `DELETE /tickets/`
 
 Delete all tickets, with option to force delete regardless of status.
@@ -268,6 +307,9 @@ Delete all tickets, with option to force delete regardless of status.
 #### 🔗 Example Request URL
 `DELETE http://localhost:8000/tickets/?force_delete=True`
 
+#### 🔗 Example `curl` Command
+`curl -X DELETE "http://localhost:8000/tickets/?force_delete=True"`
+
 
 ## Testing
 ### 🔧 Unit Tests:
@@ -277,7 +319,7 @@ You can run the unit tests using the following command:
 pytest .\tests\unit --disable-warnings
 ```
 
-### 🔗 Integration Tests:
+### 🛠️ Integration Tests:
 You can run the integration tests using the following command:
 ```bash
 pytest -s -v .\tests\integration --disable-warnings
