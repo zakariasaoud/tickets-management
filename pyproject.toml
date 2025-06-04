@@ -1,3 +1,13 @@
+[project]
+name = "tickets-management"
+version = "0.1.0"
+description = "This is a FastAPI application for managing tickets using an asynchronous SQLite database with SQLAlchemy in async mode."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+  { name="Zakaria SAOUD", email="zakaria.saoud@live.fr" }
+]
+
 [tool.ruff]
 line-length = 88
 target-version = "py310"
